@@ -1,39 +1,40 @@
 #include "Block.h"
 #include "sha256.h"
 
-Block::Block(uint32_t nIndexIn, const string &sDataIn) : _nIndex(nIndexIn), _sData(sDataIn)
+Block::Block(uint32_t indexIn, const string &dataIn)
 {
-    _nNonce = 0;
-    _tTime = time(nullptr);
-
-    sHash = _CalculateHash();
+    this->index = index;
+    this->data = data;
+    this->nonce = 0;
+    this->tTime = time(nullptr);
+    this->hash = CalculateHash();
 }
 
-void Block::MineBlock(uint32_t nDifficulty)
+void Block::MineBlock(uint32_t difficulty)
 {
-    char cstr[nDifficulty + 1];
-    for (uint32_t i = 0; i < nDifficulty; ++i)
+    char difficultyCharString[difficulty + 1];
+    for (uint32_t i = 0; i < difficulty; ++i)
     {
-        cstr[i] = '0';
+        difficultyCharString[i] = '0';
     }
-    cstr[nDifficulty] = '\0';
+    difficultyCharString[difficulty] = '\0';
 
-    string str(cstr);
+    string difficultyString(difficultyCharString);
 
     do
     {
-        _nNonce++;
-        sHash = _CalculateHash();
+        this->nonce++;
+        this->hash = CalculateHash();
     }
-    while (sHash.substr(0, nDifficulty) != str);
+    while (this->hash.substr(0, difficulty) != difficultyString);
 
-    cout << "Block mined: " << sHash << endl;
+    cout << "Block mined: " << this->hash << endl;
 }
 
-inline string Block::_CalculateHash() const
+inline const string Block::CalculateHash()
 {
-    stringstream ss;
-    ss << _nIndex << sPrevHash << _tTime << _sData << _nNonce;
+    stringstream hashStringStream;
+    hashStringStream << this->index << this->previousHash << this->tTime << this->data << nonce;
 
-    return sha256(ss.str());
+    return sha256(hashStringStream.str());
 }

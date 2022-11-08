@@ -7,22 +7,22 @@
 
 using namespace std;
 
-class Block {
-public:
-    string sHash;
-    string sPrevHash;
+class Block { 
+    private:
+        uint32_t index;
+        uint32_t nonce;
+        string data;
+        time_t tTime;
 
-    Block(uint32_t nIndexIn, const string &sDataIn);
+        const string CalculateHash();
 
-    void MineBlock(uint32_t nDifficulty);
+    public:
+        string hash;
+        string previousHash;
 
-private:
-    uint32_t _nIndex;
-    uint32_t _nNonce;
-    string _sData;
-    time_t _tTime;
+        Block(uint32_t index, const string &data);
+        void MineBlock(uint32_t difficulty);
 
-    string _CalculateHash() const;
 };
 
 #endif //TESTCHAIN_BLOCK_H

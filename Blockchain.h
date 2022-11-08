@@ -8,16 +8,16 @@
 using namespace std;
 
 class Blockchain {
-public:
-    Blockchain();
+    public:
+        Blockchain();
 
-    void AddBlock(Block bNew);
+        void AddBlock(Block newBlock);
 
-private:
-    uint32_t _nDifficulty;
-    vector<Block> _vChain;
+    private:
+        uint32_t difficulty;
+        vector<Block> blockChain;
 
-    Block _GetLastBlock() const;
+        const Block GetLastBlock();
 };
 
 #endif //TESTCHAIN_BLOCKCHAIN_H

@@ -2,18 +2,18 @@
 
 Blockchain::Blockchain()
 {
-    _vChain.emplace_back(Block(0, "Genesis Block"));
-    _nDifficulty = 6;
+    this->blockChain.emplace_back(Block(0, "Genesis Block"));
+    this->difficulty = 6;
 }
 
-void Blockchain::AddBlock(Block bNew)
+void Blockchain::AddBlock(Block newBlock)
 {
-    bNew.sPrevHash = _GetLastBlock().sHash;
-    bNew.MineBlock(_nDifficulty);
-    _vChain.push_back(bNew);
+    newBlock.previousHash = this->GetLastBlock().hash;
+    newBlock.MineBlock(this->difficulty);
+    this->blockChain.push_back(newBlock);
 }
 
-Block Blockchain::_GetLastBlock() const
+const Block Blockchain::GetLastBlock()
 {
-    return _vChain.back();
+    return this->blockChain.back();
 }
