@@ -15,6 +15,7 @@ namespace jsonrpc
             JsonRpcException( int code );
             JsonRpcException( int code, const std::string &exceptionMessage );
             JsonRpcException( int code, const std::string &exceotionMessage, const Json::Value &data );
+            JsonRpcException(const std::string &exceptionMessage);
             virtual ~JsonRpcException() throw();
 
             int GetCode() const;
