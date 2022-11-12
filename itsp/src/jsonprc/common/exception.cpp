@@ -1,6 +1,6 @@
 #include "exception.h"
 
-using namespace jsonrpc;
+using namespace itsp;
 
 JsonRpcException::JsonRpcException( int code )
 {
@@ -47,17 +47,17 @@ JsonRpcException::JsonRpcException( const std::string &exceptionMessage )
 	this->SetWhatMessage();
 }
 
-JsonRpcException::~JsonRpcException throw() {}
+JsonRpcException::~JsonRpcException() throw() {}
 
-int JsonRpcException::GetCode const { return this->code; }
+int JsonRpcException::GetCode() const { return this->code; }
 
-const std::string &JsonRpcException::GetMessage const { return this->exceptionMessage; }
+const std::string &JsonRpcException::GetMessage() const { return this->exceptionMessage; }
 
-const Json::Value &JsonRpcException::GetData const { return this->data; }
+const Json::Value &JsonRpcException::GetData() const { return this->data; }
 
-const char *JsonRpcException::what const throw() { return this->whatString.c_str(); }
+const char *JsonRpcException::what() const throw() { return this->whatString.c_str(); }
 
-void JsonRpcException::SetWhatMessage 
+void JsonRpcException::SetWhatMessage() 
 {
 	if( this->code != 0 )
 	{

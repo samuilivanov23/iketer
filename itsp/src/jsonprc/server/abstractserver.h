@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 
-namespace jsonrpc 
+namespace itsp
 {
     template <class S> class AbstractServer : public IProcedureInvokationHandler
     {
@@ -89,4 +89,4 @@ namespace jsonrpc
     }
 }
 
-#endif ABSTRACT_SERVER_H
+#endif //ABSTRACT_SERVER_H

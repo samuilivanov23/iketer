@@ -7,7 +7,7 @@
 
 #include "errors.h"
 
-namespace jsonrpc
+namespace itsp
 {
     class JsonRpcException : public std::exception 
     {
@@ -31,4 +31,4 @@ namespace jsonrpc
     };
 }
 
-#endif EXCEPTION_H
+#endif //EXCEPTION_H

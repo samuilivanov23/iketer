@@ -1,7 +1,7 @@
 #include "errors.h"
 #include "exception.h"
 
-using namespace jsonrpc;
+using namespace itsp;
 
 std::map<int, std::string> Errors::possibleErrors;
 Errors::_init Errors::_initializer;

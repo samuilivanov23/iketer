@@ -6,4 +6,4 @@
 #include <jsonrpc/common/exception.h>
 #include <jsonrpc/server/abstractserver.h>
 
-#endif 
+#endif //SERVER_H 
