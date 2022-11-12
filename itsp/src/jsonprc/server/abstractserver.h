@@ -5,8 +5,8 @@
 #include "iclientconnectionhandler.h"
 #include "iprocedureinvokationhandler.h"
 #include "requesthandlerfactory.h"
+#include "../common/procedure.h"
 
-#include <jsonrpc/common/procedure.h>
 #include <map>
 #include <string>
 #include <vector>
