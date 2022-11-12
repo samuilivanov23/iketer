@@ -1,0 +1,3 @@
+g++ -std=c++11 -g -DDEBUG -o rpc-test-build \
+        errors.h exception.h errors.cpp exception.cpp \
+        -ljsoncpp
