@@ -4,6 +4,7 @@
 #define KEY_SPEC_PROCEDURE_NAME "name"
 #define KEY_SPEC_PROCEDURE_METHOD "method"
 #define KEY_SPEC_PROCEDURE_NOTIFICATION "notification"
+#define KEY_SPEC_PROCEDURE_PARAMETERS "parameters"
 #define KEY_SPEC_RETURN_TYPE "returns"
 
 namespace itsp
@@ -12,7 +13,7 @@ namespace itsp
     typedef enum { RPC_METHOD, RPC_NOTIFICATION };
 
     //Defines all valid and processable types of this protocol
-    enum jsontype_t { JSON_STRING = 1, JSON_BOOLEAN = 2, JSON_INTEGER = 3, JSON_REAL = 4, JSON_OBJECT = 5, JSON_ARRAY = 6, JSON_NUMERIC = 7 }
+    enum jsontype_t { JSON_STRING = 1, JSON_BOOLEAN = 2, JSON_INTEGER = 3, JSON_UINTEGER = 4, JSON_REAL = 5, JSON_OBJECT = 6, JSON_ARRAY = 7, JSON_NUMERIC = 8 }
 }
 
 
