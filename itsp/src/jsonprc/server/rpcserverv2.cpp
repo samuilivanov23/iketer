@@ -109,6 +109,7 @@ void RpcServerV2::WrapException( const Json::Value &request, const JsonRpcExcept
 }
 
 procedure_t RpcServerV2::GetRequestType( const Json::Value &request )
+
 {
     if( request.isMember( KEY_REQUEST_ID ) ) { return RPC_METHOD; }
 
