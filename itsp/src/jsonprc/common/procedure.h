@@ -54,6 +54,8 @@ namespace itsp
             procedure_t procedureType;
             jsontype_t returnType;
             parameterDeclaration_t procedureParameterDeclarationType;
+
+            bool ValidateSingleParameter( jsontype_t expectedParameterType, const Json::Value &parameterValue ) const;
     };
 }
 
