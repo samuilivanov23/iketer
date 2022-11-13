@@ -108,7 +108,7 @@ void RpcServerV2::WrapException( const Json::Value &request, const JsonRpcExcept
     returnException["error"]["data"] = exception.GetData();
 }
 
-procedure_t RpcServerV2::GetProcedureType( const Json::Value &request )
+procedure_t RpcServerV2::GetRequestType( const Json::Value &request )
 {
     if( request.isMember( KEY_REQUEST_ID ) ) { return RPC_METHOD; }
 

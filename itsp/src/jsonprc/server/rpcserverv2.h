@@ -23,7 +23,7 @@ namespace itsp
             void WrapResult( const Json::Value &request, Json::Valie &response, Json::Value &returnValue );
             void WrapError( const Json::Value &request, int errorCode, const std::string &errorMessage, Json::Value &resultError );
             void WrapException( const Json::Value &request, const JsonRpcException &exception, Json::Value &returnException  );
-            procedure_t GetProcedureType( const Json::Value &request );
+            procedure_t GetRequestType( const Json::Value &request );
 
         private:
             void HandleSingleRequest( const Json::Value &request, Json::Value &response );
