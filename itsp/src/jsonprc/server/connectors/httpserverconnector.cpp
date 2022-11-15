@@ -170,11 +170,69 @@ void HttpServer::SetUrlHandler( const std::string &url, IClientConnectionHandler
     this->SetHandler(NULL);
 }
 
-//TODO HttpServer::MicroHttpdResult HttpServer::Callback( void *cls, 
-//                                                        struct MHD_Connection *connection, 
-//                                                        const char *url,
-//                                                        const char *method,
-//                                                        const char *version,
-//                                                        const char *upload_data,
-//                                                        size_t *upload_data_size,
-//                                                        void **con_cls );
+HttpServer::MicroHttpdResult HttpServer::Callback( void *cls, 
+                                                   struct MHD_Connection *connection, 
+                                                   const char *url,
+                                                   const char *method,
+                                                   const char *version,
+                                                   const char *uploadData,
+                                                   size_t *uploadDataSize,
+                                                   void **con_cls ) 
+{
+    (void)version;
+    if( *con_cls )
+    {
+        struct MHD_ConnectionInfo *clientConnection = new MHD_ConnectionInfo;
+        clientConnection->connection = connection;
+        clientConnection->server = static_cast<HttpServer*>(cls);
+        *con_cls = clientConnection;
+
+        return MHD_YES;
+    }
+
+    struct MHD_ConnectionInfo * clientConnection = static_cast<struct MHD_ConnectionInfo*>(*con_cls);
+
+    if( string( "POST" ) == method )
+    {
+        if( *uploadDataSize != 0 )
+        {
+            clientConnection->request.write( uploadData, uploadDataSize );
+            *uploadDataSize = 0;
+            return MHD_YES;
+        }
+        else
+        {
+            string response;
+            IClientConnectionHandler *clientConnectionHandler = clientConnection->httpServer->GetHandler( string( url ) );
+            if( connectionHandler == NULL )
+            {
+                clientConnection->code = MHD_HTTP_INTERNAL_SERVER_ERROR;
+                clientConnection->httpServer->SendResponse( "No client connection handler found!", clientConnection )
+            }
+            else 
+            {
+                clientConnection->code = MHD_HTTP_OK;
+                clientConnectionHandler->HandleRequest( clientConnection->request.str(), response );
+                clientConnection->httpServer->SendResponse( response, clientConnection );
+            }
+        }    
+    }
+    else if( string( "OPTIONS" ) == method )
+    {
+        clientConnection->code = MHD_HTTP_OK;
+        clientConnection->httpServer->SendOptionsResponse( clientConnection );
+    }
+    else
+    {
+        clientConnection->code = MHD_METHOD_NOT_ALLOWED;
+        clientConnection->httpServer->SendResponse( "Not allowed HTTP method" );
+    }
+
+    if( clientConnection != nullptr )
+    {
+        delete clientConnection;
+    }
+    *con_cls = NULL;
+
+    return MHD_YES;
+}
