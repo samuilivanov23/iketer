@@ -30,7 +30,7 @@ std::string SpecificationWriter::toString( const vector<Procedure> &procedures )
 bool SpecificationWriter::toFile( const std::string &fileName, const vector<Procedure> &procedures )
 {
     ofstream fileOutputStream;
-    fileOutputStream.open( fileName.c_str(), io_base::out );
+    fileOutputStream.open( fileName.c_str(), ios_base::out );
     if( !fileOutputStream.is_open() ) { return false; }
     fileOutputStream << toString( procedures );
     return true;
@@ -47,7 +47,7 @@ Json::Value SpecificationWriter::toJsonLiteral( jsontype_t type )
         case JSON_UINTEGER: jsonLiteral = 1;                            break;
         case JSON_REAL:     jsonLiteral = 1.0;                          break;
         case JSON_NUMERIC:  jsonLiteral = 1.0;                          break;
-        case JSON_ARRAY:    jsonLiteral = Json::Array;                  break;
+        case JSON_ARRAY:    jsonLiteral = Json::arrayValue;                  break;
         case JSON_OBJECT:   jsonLiteral["objectKey"] = "objectValue";   break;
     }
 
@@ -59,12 +59,12 @@ void SpecificationWriter::procedureToJsonValue( const Procedure &procedure, Json
     targetJson[KEY_SPEC_PROCEDURE_NAME] = procedure.GetProcedureName();
     if( procedure.GetProcedureType() == RPC_METHOD )
     {
-        targetJson[KEY_SPEC_RETURN_TYPE] = toJsonLiteral( procedure.GetReturnType() );
+        targetJson[KEY_SPEC_RETURN_TYPE] = toJsonLiteral( procedure.GetProcedureReturnType() );
     }
 
-    for( parameterNameList_t::const_iterator i = procedure.GetParameters().begin(); it != procedure.GetParameters().end(); ++i )
+    for( parameterNameList_t::const_iterator i = procedure.GetProcedureParameters().begin(); i != procedure.GetProcedureParameters().end(); ++i )
     {
-        if( procedure.GetParameterDeclarationType() == PARAMS_BY_POSITION )
+        if( procedure.GetProcedureParameterDeclarationType() == PARAMS_BY_POSITION )
         {
             targetJson[KEY_SPEC_PROCEDURE_PARAMETERS].append( toJsonLiteral(i->second) );
         }

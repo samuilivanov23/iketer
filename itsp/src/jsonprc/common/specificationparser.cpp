@@ -10,7 +10,7 @@ vector<Procedure> SpecificationParser::GetProceduresFromFile( const string &file
 {
     string fileContent;
     GetFileContent( fileName, fileContent );
-    return GeProceduresFromString( fileContent );
+    return GetProceduresFromString( fileContent );
 }
 
 vector<Procedure> SpecificationParser::GetProceduresFromString( const string &specificationString )
@@ -26,7 +26,7 @@ vector<Procedure> SpecificationParser::GetProceduresFromString( const string &sp
         throw JsonRpcException( Errors::ERROR_RPC_JSON_PARSE_ERROR, " ||| specification file contains syntax errors!" );
     }
 
-    if( !value.isArray() ) { throw JsonRpcException( Errors::ERROR_SERVER_PROCEDURE_SPECIFICATION_SYNTAX, " ||| top level JSON value must be an array! IT'S NOT" ) }
+    if( !value.isArray() ) { throw JsonRpcException( Errors::ERROR_SERVER_PROCEDURE_SPECIFICATION_SYNTAX, " ||| top level JSON value must be an array! IT'S NOT" ); }
 
     vector<Procedure> resultProcedures;
     map<string, Procedure> proceduresNames;
@@ -40,11 +40,11 @@ vector<Procedure> SpecificationParser::GetProceduresFromString( const string &sp
         {
             throw JsonRpcException( Errors::ERROR_SERVER_PROCEDURE_SPECIFICATION_SYNTAX, " ||| Procedure already exist! MUST BE UNIQUE" );
         }
-        proceduresNames[procedure.GetProcedureName] = procedure;
+        proceduresNames[procedure.GetProcedureName()] = procedure;
         resultProcedures.push_back( procedure );
     }
 
-    return resultProcedures
+    return resultProcedures;
 }
 
 
@@ -63,15 +63,15 @@ void SpecificationParser::GetFileContent( const std::string &fileName, std::stri
     }
 }
 
-vector<Procedure> SpecificationParser::GetProcedure( Json::Value &procedureSignature, Procedure resultProcedure )
+void SpecificationParser::GetProcedure( Json::Value &procedureSignature, Procedure &resultProcedure )
 {
-    if( procedureSignature.isObject() && !GetProcedureName( procedureSignature ).isEmpty() )
+    if( procedureSignature.isObject() && !GetProcedureName( procedureSignature ).empty() )
     {
         resultProcedure.SetProcedureName( GetProcedureName( procedureSignature ) );
         if( procedureSignature.isMember( KEY_SPEC_RETURN_TYPE ) )
         {
             resultProcedure.SetProcedureType( RPC_METHOD );
-            resultProcedure.SetReturnType( toJsonType( procedureSignature[KEY_SPEC_RETURN_TYPE] ) );
+            resultProcedure.SetProcedureReturnType( toJsonType( procedureSignature[KEY_SPEC_RETURN_TYPE] ) );
         }
         else
         {
@@ -84,13 +84,13 @@ vector<Procedure> SpecificationParser::GetProcedure( Json::Value &procedureSigna
             {
                 if( procedureSignature[KEY_SPEC_PROCEDURE_PARAMETERS].isObject() )
                 {
-                    resultProcedure.SetParameterDeclarationType( PARAMS_BY_NAME );
+                    resultProcedure.SetProcedureParameterDeclarationType( PARAMS_BY_NAME );
                     GetNamedParameters( procedureSignature, resultProcedure );
                 }
                 else if ( procedureSignature[KEY_SPEC_PROCEDURE_PARAMETERS].isArray() )
                 {
-                    resultProcedure.SetParameterDeclarationType( PARAMS_BY_POSITION );
-                    GetPositionalParameters( procedureSignature, resultProcedures );
+                    resultProcedure.SetProcedureParameterDeclarationType( PARAMS_BY_POSITION );
+                    GetPositionalParameters( procedureSignature, resultProcedure );
                 }
             }
             else
@@ -105,7 +105,7 @@ vector<Procedure> SpecificationParser::GetProcedure( Json::Value &procedureSigna
     }
 }
 
-jsontype_t SpecicifationParser::toJsonType( Json::Value &value )
+jsontype_t SpecificationParser::toJsonType( Json::Value &value )
 {
     jsontype_t resultJson;
     switch( value.type() )
