@@ -2,4 +2,6 @@ g++ -std=c++11 -g -DDEBUG -o rpc-test-build \
         errors.h exception.h errors.cpp exception.cpp \
         -ljsoncpp
 
-g++ -std=c++11 -g -DDEBUG -o rpc-test-build errors.cpp errors.h exception.cpp exception.h jsonparser.h procedure.h procedure.cpp -ljsoncpp
+g++ -std=c++11 -g -DDEBUG -o rpc-test-build errors.cpp errors.h exception.cpp exception.h jsonparser.h procedure.h procedure.cpp specification.h specificationparser.h specificationparser.cpp specificationwriter.h specificationwriter.cpp -ljsoncpp
+
+g++ -std=c++11 -g -DDEBUG -o rpc-test-build iprocedureinvokationhandler.h iclientconnectionhandler.h abstractserverconnector.h abstractserverconnector.cpp -ljsoncpp

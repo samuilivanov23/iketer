@@ -13,7 +13,7 @@ namespace itsp
             virtual void HandleRequest( std::string &request, std::string &response ) = 0;
     };
 
-    class IProtocolHandler : public IConnectionHandler
+    class IProtocolHandler : public IClientConnectionHandler
     {
         public:
             virtual ~IProtocolHandler() {}

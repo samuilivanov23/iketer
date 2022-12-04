@@ -1,7 +1,7 @@
 #ifndef ABSTRACTSERVERCONNECTOR_H
 #define ABSTRACTSERVERCONNECTOR_H
 
-#include <iclientconnectionhandler.h>
+#include "iclientconnectionhandler.h"
 #include <string>
 
 namespace itsp
@@ -9,7 +9,7 @@ namespace itsp
     class AbstractServerConnector
     {
         public:
-            AbstractServerConnctor();
+            AbstractServerConnector();
             virtual ~AbstractServerConnector();
 
             //Signals the connector to start listening for new requests
@@ -23,11 +23,11 @@ namespace itsp
             //This is the main method of processing incoming requests
             void ProcessRequest( const std::string &request, const std::string &response );
 
-            void SetHandler( IClientConnectionHandler *connectionHandler );
+            void SetHandler( IClientConnectionHandler *clientConnectionHandler );
             IClientConnectionHandler *GetHandler();
 
         private:
-            IClientConnectionHandler *connectionHandler;
+            IClientConnectionHandler *clientConnectionHandler;
     };
 }
 
