@@ -19,7 +19,7 @@ Procedure::Procedure( const string &procedureName, parameterDeclaration_t parame
     
     while( parameterName != NULL )
     {
-        parameterType = ( jsontype_t )va_arg( procedureParameters, const char* );
+        parameterType = ( jsontype_t )va_arg( procedureParameters, int );
         this->AddParameter( parameterName, parameterType );
         parameterName = va_arg( procedureParameters, const char* );
     }
@@ -40,7 +40,7 @@ Procedure::Procedure( const string &procedureName, parameterDeclaration_t parame
 
     while( parameterName != NULL )
     {
-        parameterType = ( jsontype_t )va_arg( procedureParameters, const char* );
+        parameterType = ( jsontype_t )va_arg( procedureParameters, int );
         this->AddParameter( parameterName, parameterType );
         parameterName = va_arg( procedureParameters, const char* );
     }
@@ -67,27 +67,27 @@ bool Procedure::ValidateParameters( const Json::Value &parameters ) const
     else { return false; }
 }
 
-const parameterNameList_t &Procedure::GetProcedureParameters() { return this->procedureParametersName; }
-procedure_t Procedure::GetProcedureType() { return this->procedureType; }
-const std::string &Procedure::GetProcedureName() { return this->procedureName; }
-jsontype_t Procedure::GetProcedureReturnType() { return this->procedureReturnType; }
-parameterDeclaration_t Procedure::GetProcedureParameterDeclarationType() { return this->procedureParameterDeclarationType; }
+const parameterNameList_t &Procedure::GetProcedureParameters() const { return this->procedureParametersName; }
+procedure_t Procedure::GetProcedureType() const { return this->procedureType; }
+const std::string &Procedure::GetProcedureName() const { return this->procedureName; }
+jsontype_t Procedure::GetProcedureReturnType() const { return this->procedureReturnType; }
+parameterDeclaration_t Procedure::GetProcedureParameterDeclarationType() const { return this->procedureParameterDeclarationType; }
 
 void Procedure::SetProcedureName( const std::string &procedureName ) { this->procedureName = procedureName; }
 void Procedure::SetProcedureType( procedure_t procedureType ) { this->procedureType = procedureType; }
-void Procedure::SetReturnType( jsontype_t procedureReturnType ) { this->procedureReturnType = procedureReturnType; }
-void Procedure::SetParameterDeclarationType( parameterDeclaration_t procedureParameterDeclarationType ) { this->procedureParameterDeclarationType = procedureParameterDeclarationType; }
+void Procedure::SetProcedureReturnType( jsontype_t procedureReturnType ) { this->procedureReturnType = procedureReturnType; }
+void Procedure::SetProcedureParameterDeclarationType( parameterDeclaration_t procedureParameterDeclarationType ) { this->procedureParameterDeclarationType = procedureParameterDeclarationType; }
 
 void Procedure::AddParameter( const std::string &procedureName, jsontype_t parameterType )
 {
     this->procedureParametersName[procedureName] = parameterType;
-    this->procedureParametersPosition.push_babk( parameterType );
+    this->procedureParametersPosition.push_back( parameterType );
 }
 
 bool Procedure::ValidateNamedParameters( const Json::Value &parameters ) const
 {
     bool areParametersValid = parameters.isObject() || parameters.isNull();
-    for( map<std::string, jsontype_t>::const_iterator i = this->procedureParametersName.begin(); isValid && i.procedureParametersName.end(); ++i )
+    for( map<std::string, jsontype_t>::const_iterator i = this->procedureParametersName.begin(); areParametersValid == true && i != this->procedureParametersName.end(); ++i )
     {
         if( !parameters.isMember( i->first ) )
         {
