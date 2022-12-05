@@ -14,3 +14,5 @@ namespace itsp
             static IProtocolHandler *CreateProtocolHandler( serverVersion_t serverVersionType, IProcedureInvokationHandler &procedureInvokationHandler );
     };
 }
+
+#endif //REQUESTHANDLERFACTORY_H

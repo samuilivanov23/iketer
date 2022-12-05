@@ -9,7 +9,7 @@
 #include "../common/exception.h"
 
 #define KEY_REQUEST_VERSION "jsonrpc"
-#define JSON_RPC_VERSION "2.0"
+#define JSON_RPC_VERSION2 "2.0"
 
 namespace itsp
 {
@@ -20,14 +20,14 @@ namespace itsp
 
             void HandleJsonRequest( const Json::Value &request, Json::Value &response );
             bool ValidateRequestFields( const Json::Value &value );
-            void WrapResult( const Json::Value &request, Json::Valie &response, Json::Value &returnValue );
+            void WrapResult( const Json::Value &request, Json::Value &response, Json::Value &returnValue );
             void WrapError( const Json::Value &request, int errorCode, const std::string &errorMessage, Json::Value &resultError );
             void WrapException( const Json::Value &request, const JsonRpcException &exception, Json::Value &returnException  );
             procedure_t GetRequestType( const Json::Value &request );
 
         private:
             void HandleSingleRequest( const Json::Value &request, Json::Value &response );
-            void HandleBatchRequests( const Json::Value &requests, Json::Value $response );
+            void HandleBatchRequests( const Json::Value &requests, Json::Value &response );
     };
 }
 

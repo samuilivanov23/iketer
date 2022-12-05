@@ -9,9 +9,9 @@ AbstractServerConnector::AbstractServerConnector() { this->clientConnectionHandl
 
 AbstractServerConnector::~AbstractServerConnector() {}
 
-void AbstractServerConnector::ProcessRequest( const std::string &request, const std::string &response )
+void AbstractServerConnector::ProcessRequest( const string &request, string &response )
 {
-    if( this->clientConnectionHandler != NULL ) { this->clientConnectionHandler->HandleRequest( requst, response ); }
+    if( this->clientConnectionHandler != NULL ) { this->clientConnectionHandler->HandleRequest( request, response ); }
 }
 
 void AbstractServerConnector::SetHandler( IClientConnectionHandler *clientConnectionHandler )
@@ -19,4 +19,4 @@ void AbstractServerConnector::SetHandler( IClientConnectionHandler *clientConnec
     this->clientConnectionHandler = clientConnectionHandler;
 }
 
-IClientConnectionHandler *AbstractServerConnector::GetHandler { return this->clientConnectionHandler; }
+IClientConnectionHandler *AbstractServerConnector::GetHandler() { return this->clientConnectionHandler; }

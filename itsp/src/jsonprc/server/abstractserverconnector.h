@@ -21,7 +21,7 @@ namespace itsp
             virtual bool StopListening() = 0;
 
             //This is the main method of processing incoming requests
-            void ProcessRequest( const std::string &request, const std::string &response );
+            void ProcessRequest( const std::string &request, std::string &response );
 
             void SetHandler( IClientConnectionHandler *clientConnectionHandler );
             IClientConnectionHandler *GetHandler();
