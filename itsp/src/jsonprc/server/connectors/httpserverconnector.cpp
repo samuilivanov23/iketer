@@ -1,5 +1,5 @@
 #include "httpserverconnector.h"
-#include "../common/specificationparser.h"
+#include "../../common/specificationparser.h"
 #include <sstream>
 #include <iostream>
 #include <cstring>
@@ -10,7 +10,7 @@ using namespace itsp;
 
 #define BUFFERSIZE 65536
 
-struct MHD_ConnectionInfo 
+struct mhd_ConnectionInfo 
 {
     struct MHD_PostProcessor *postProcessor;    
     MHD_Connection *connection;
@@ -19,16 +19,35 @@ struct MHD_ConnectionInfo
     int code;
 };
 
-HttpServer::HttpServer( uint16_t port, const std::string &sslCert, const std::string sslKey, uint32_t threads ) 
+HttpServer::HttpServer( uint16_t port, const std::string &sslCert, const std::string &sslKey, uint32_t threads ) 
 {
     this->port = port;
     this->sslCert = sslCert;
     this->sslKey = sslKey;
     this->threads = threads;
     this->isBindLocalhost = false;
+	this->isRunning = false;
+	this->mhdDaemon = NULL;
 }
 
 HttpServer::~HttpServer() {}
+
+IClientConnectionHandler *HttpServer::GetConnectionHandler( const std::string &url )
+{
+	if( AbstractServerConnector::GetHandler() != NULL )
+	{
+		return AbstractServerConnector::GetHandler();
+	}
+	
+	map<string, IClientConnectionHandler*>::iterator i = this->urlHandler.find( url );
+	
+	if( i != this->urlHandler.end() )
+	{
+		return i->second;
+	}
+
+	return NULL;
+}
 
 HttpServer &HttpServer::BindToLocalhost()
 {
@@ -40,8 +59,8 @@ bool HttpServer::StartListening()
 {
     if( !this->isRunning )
     {
-        const bool hasEpoll = ( MHD_is_feature_supported( MHD_FEATURE_EPOLL ) == MHD_YESS );
-        const bool hasPoll = ( MHD_is_feature_supported( MHD_FEATURE_POLL ) == MHD_YESS );
+        const bool hasEpoll = ( MHD_is_feature_supported( MHD_FEATURE_EPOLL ) == MHD_YES );
+        const bool hasPoll = ( MHD_is_feature_supported( MHD_FEATURE_POLL ) == MHD_YES );
         unsigned int mhdFlags = MHD_USE_DUAL_STACK;
 
         if( hasEpoll )
@@ -57,13 +76,13 @@ bool HttpServer::StartListening()
         }
         else if( hasPoll )
         {
-            mhdFlags = MHD_USE_POLL_INTERNALY;
+            mhdFlags = MHD_USE_POLL_INTERNALLY;
         }
 
         
         if( this->isBindLocalhost )
         {
-            memset( this->loopbackAddress, 0, sizeof( this->loopbackAddress ) );
+            memset( &this->loopbackAddress, 0, sizeof( this->loopbackAddress ) );
             loopbackAddress.sin_family = AF_INET;
             loopbackAddress.sin_port = htons( this->port );
             loopbackAddress.sin_addr.s_addr = htonl( INADDR_LOOPBACK );
@@ -119,8 +138,13 @@ bool HttpServer::StartListening()
                                                 this->threads, 
                                                 MHD_OPTION_END );
         }
-
+		if( this->mhdDaemon != NULL )
+		{
+			this->isRunning = true;
+		}
     }
+	
+	return this->isRunning;
 }
 
 bool HttpServer::StopListening()
@@ -136,8 +160,8 @@ bool HttpServer::StopListening()
 
 bool HttpServer::SendResponse( const std::string &response, void *addInfo )
 {
-    struct MHD_ConnectionInfo *clientConnection = static_cast<struct MHD_ConnectionInfo*>( addInfo );
-    struct MHD_response *result = MHD_create_response_from_buffer( response.size(), ( void* )response.c_str(), MHD_RESPMEM_MUST_COPY );
+    struct mhd_ConnectionInfo *clientConnection = static_cast<struct mhd_ConnectionInfo*>( addInfo );
+    struct MHD_Response *result = MHD_create_response_from_buffer( response.size(), ( void* )response.c_str(), MHD_RESPMEM_MUST_COPY );
 
     MHD_add_response_header( result, "Content-Type", "application/json" );
     MHD_add_response_header( result, "Access-Control-Allow-Origin", "*" );
@@ -145,15 +169,15 @@ bool HttpServer::SendResponse( const std::string &response, void *addInfo )
     int return_ = MHD_queue_response( clientConnection->connection, clientConnection->code, result );
     MHD_destroy_response( result );
 
-    return return_ == MHD _YES;
+    return return_ == MHD_YES;
 }
 
 bool HttpServer::SendOptionsResponse( void *addInfo )
 {
-    struct MHD_ConnectionInfo *clientConnection = static_cast<struct MHD_ConnectionInfo*>( addInfo );
-    struct MHD_response *result = MHD_create_response_from_buffer( 0, NULL, MHD_RESPMEM_MUST_COPY );
+    struct mhd_ConnectionInfo *clientConnection = static_cast<struct mhd_ConnectionInfo*>( addInfo );
+    struct MHD_Response *result = MHD_create_response_from_buffer( 0, NULL, MHD_RESPMEM_MUST_COPY );
 
-    MHD_add_response_header( result, "Allow", "POST", "OPTIONS" );
+    MHD_add_response_header( result, "Allow", "POST, OPTIONS" );
     MHD_add_response_header( result, "Access-Control-Allow-Origin", "*" );
     MHD_add_response_header( result, "Access-Control-Allow-Headers", "origin, content-type, accept" );
     MHD_add_response_header( result, "DAV", "1" );
@@ -164,7 +188,7 @@ bool HttpServer::SendOptionsResponse( void *addInfo )
     return return_ == MHD_YES;
 }
 
-void HttpServer::SetUrlHandler( const std::string &url, IClientConnectionHandler &clientConnectionHandler )
+void HttpServer::SetUrlHandler( const std::string &url, IClientConnectionHandler *clientConnectionHandler )
 {
     this->urlHandler[url] = clientConnectionHandler;
     this->SetHandler(NULL);
@@ -182,32 +206,32 @@ HttpServer::MicroHttpdResult HttpServer::Callback( void *cls,
     (void)version;
     if( *con_cls )
     {
-        struct MHD_ConnectionInfo *clientConnection = new MHD_ConnectionInfo;
+        struct mhd_ConnectionInfo *clientConnection = new mhd_ConnectionInfo;
         clientConnection->connection = connection;
-        clientConnection->server = static_cast<HttpServer*>(cls);
+        clientConnection->httpServer = static_cast<HttpServer*>(cls);
         *con_cls = clientConnection;
 
         return MHD_YES;
     }
 
-    struct MHD_ConnectionInfo * clientConnection = static_cast<struct MHD_ConnectionInfo*>(*con_cls);
+    struct mhd_ConnectionInfo *clientConnection = static_cast<struct mhd_ConnectionInfo*>(*con_cls);
 
     if( string( "POST" ) == method )
     {
         if( *uploadDataSize != 0 )
         {
-            clientConnection->request.write( uploadData, uploadDataSize );
+            clientConnection->request.write( uploadData, *uploadDataSize );
             *uploadDataSize = 0;
             return MHD_YES;
         }
         else
         {
             string response;
-            IClientConnectionHandler *clientConnectionHandler = clientConnection->httpServer->GetHandler( string( url ) );
-            if( connectionHandler == NULL )
+            IClientConnectionHandler *clientConnectionHandler = clientConnection->httpServer->GetConnectionHandler( string( url ) );
+            if( clientConnectionHandler == NULL )
             {
                 clientConnection->code = MHD_HTTP_INTERNAL_SERVER_ERROR;
-                clientConnection->httpServer->SendResponse( "No client connection handler found!", clientConnection )
+                clientConnection->httpServer->SendResponse( "No client connection handler found!", clientConnection );
             }
             else 
             {
@@ -224,7 +248,7 @@ HttpServer::MicroHttpdResult HttpServer::Callback( void *cls,
     }
     else
     {
-        clientConnection->code = MHD_METHOD_NOT_ALLOWED;
+        clientConnection->code = MHD_HTTP_METHOD_NOT_ALLOWED; 
         clientConnection->httpServer->SendResponse( "Not allowed HTTP method" );
     }
 

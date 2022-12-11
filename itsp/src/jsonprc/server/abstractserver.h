@@ -18,15 +18,7 @@ namespace itsp
         public:
             typedef void ( S::*methodPointer_t )( const Json::Value &parameter, Json::Value &result );
             typedef void ( S::*notificationPointer_t )( const Json::Value &parameter );
-
-            //AbstractServer( AbstractServerConnector &connector, serverVersion_t type = JSONRPC_SERVER_V2 ) {};
-            //virtual ~AbstractServer() {};
-            //bool StartListening();
-            //bool StopListening();
-            //virtual void HandleMethodCall( Procedure &procedure, const Json::Value &input, Json::Value &output );
-            //virtual void HandleNotificationCall( Procedure &procedure, methodPointer_t methodPointer );
-
-
+            
 			AbstractServer( AbstractServerConnector &connector, serverVersion_t type = JSONRPC_SERVER_V2 )
 			{
 				this->connection = connector;
