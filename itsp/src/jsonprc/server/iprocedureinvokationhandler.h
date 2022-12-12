@@ -14,8 +14,8 @@ namespace itsp
     {
         public:
             virtual ~IProcedureInvokationHandler() {}
-            virtual void HandleMethodCall( const Procedure &procedure, const Json::Value &input, Json::Value &output ) = 0;
-            virtual void HandleNotificationCall( const Procedure &procedure, const Json::Value &input ) = 0;
+            virtual void HandleMethodCall( Procedure &procedure, const Json::Value &input, Json::Value &output ) = 0;
+            virtual void HandleNotificationCall( Procedure &procedure, const Json::Value &input ) = 0;
             
     };
 }

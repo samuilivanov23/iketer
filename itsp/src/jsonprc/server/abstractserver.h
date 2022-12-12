@@ -19,10 +19,9 @@ namespace itsp
             typedef void ( S::*methodPointer_t )( const Json::Value &parameter, Json::Value &result );
             typedef void ( S::*notificationPointer_t )( const Json::Value &parameter );
             
-			AbstractServer( AbstractServerConnector &connector, serverVersion_t type = JSONRPC_SERVER_V2 )
+			AbstractServer( AbstractServerConnector &connector, serverVersion_t type = JSONRPC_SERVER_V2 ) : connection( connector )
 			{
-				this->connection = connector;
-				this->handler = RequestHandlerFactory::CreateProtocolHandler( type, this );
+				this->handler = RequestHandlerFactory::CreateProtocolHandler( type, *this );
 				connector.SetHandler( this->handler );
 			}
 
@@ -32,13 +31,13 @@ namespace itsp
 
 			bool StopListening() { return connection.StopListening(); }
 
-			virtual void HandleMethodCall( Procedure &procedure, const Json::Value &input, Json::Value &output )
+			void HandleMethodCall( Procedure &procedure, const Json::Value &input, Json::Value &output )
 			{
 				S *instance = dynamic_cast<S *>( this );
 				( instance->*methods[procedure.GetProcedureName()] )( input, output );
 			}
 
-			virtual void HandleNotificationCall( Procedure &procedure, Json::Value &input )
+			void HandleNotificationCall( Procedure &procedure, const Json::Value &input )
 			{
 				S *instance = dynamic_cast<S *>( this );
 				( instance->*notifications[procedure.GetProcedureName()] )( input );
@@ -78,7 +77,13 @@ namespace itsp
             std::map<std::string, methodPointer_t> methods;
             std::map<std::string, notificationPointer_t> notifications;
 
-            bool SymbolExists( const std::string &name );         
+            bool SymbolExists( const std::string &name )
+			{
+				if( methods.find( name ) != methods.end() ) { return true; }
+				if( notifications.find( name ) != notifications.end() ) { return true; }
+
+				return false;
+			}
     };
 }
 
