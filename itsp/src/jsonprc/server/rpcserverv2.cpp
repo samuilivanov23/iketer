@@ -7,7 +7,7 @@ using namespace itsp;
 
 RpcServerV2::RpcServerV2( IProcedureInvokationHandler &procedureInvokationHandler ) : AbstractProtocolHandler( procedureInvokationHandler ) {}
 
-void RpcServerV2::HandleJsonRequest( const Json::Value &request, Json::Value response )
+void RpcServerV2::HandleJsonRequest( const Json::Value &request, Json::Value &response )
 {
     if( request.isArray() )
     {
@@ -43,15 +43,15 @@ void RpcServerV2::HandleSingleRequest( const Json::Value &request, Json::Value &
     }
 }
 
-void RpcServerV2::HandleBatchRequests( const Json::Value requests, Json::Value &response )
+void RpcServerV2::HandleBatchRequests( const Json::Value &requests, Json::Value &response )
 {
-    if( requests.isEmpty() )
+    if( requests.empty() )
     {
-        this->WrapError( Json::nullValue, Errors::ERROR_RPC_INVALID_REQUEST, Errors:GetErrorMessage( Errors::ERROR_RPC_INVALID_REQUEST ), response );
+        this->WrapError( Json::nullValue, Errors::ERROR_RPC_INVALID_REQUEST, Errors::GetErrorMessage( Errors::ERROR_RPC_INVALID_REQUEST ), response );
     }
     else
     {
-        for( uint16_t i = 0; i < request.size(); i++ )
+        for( uint16_t i = 0; i < requests.size(); i++ )
         {
             Json::Value currentRequestResult;
             this->ProcessRequest( requests[i], currentRequestResult );
@@ -63,7 +63,7 @@ void RpcServerV2::HandleBatchRequests( const Json::Value requests, Json::Value &
     }
 }
 
-bool RpcServerV2::ValidateRequestFields( const Json::Value &value )
+bool RpcServerV2::ValidateRequestFields( const Json::Value &request )
 {
     if( !request.isObject() ) { return false; }
     
@@ -74,7 +74,7 @@ bool RpcServerV2::ValidateRequestFields( const Json::Value &value )
         !( request[KEY_REQUEST_ID].isInt() || request[KEY_REQUEST_ID].isString() || request[KEY_REQUEST_ID].isNull() ) ) { return false; }
     
     if( request.isMember( KEY_REQUEST_PARAMETERS ) &&
-        !( request[KEY_REQUEST_PARAMETERS].isObject() || request[KEY_REQUEST_PARAMETERS].isArray() || request[KEY_REQUEST_PARAMETERS].isNull ) ) { return false; }
+        !( request[KEY_REQUEST_PARAMETERS].isObject() || request[KEY_REQUEST_PARAMETERS].isArray() || request[KEY_REQUEST_PARAMETERS].isNull() ) ) { return false; }
 
     return true;
 }
@@ -86,7 +86,7 @@ void RpcServerV2::WrapResult( const Json::Value &request, Json::Value &response,
     response[KEY_REQUEST_ID] = request[KEY_REQUEST_ID];
 }
 
-void RpcServerV2::WrapError( const Json::Value request, int errorCode, const std::string errorMessage, Json::Value &resultError )
+void RpcServerV2::WrapError( const Json::Value &request, int errorCode, const std::string &errorMessage, Json::Value &resultError )
 {
     resultError["jsonrpc"] = "2.0";
     resultError["error"]["code"] = errorCode;

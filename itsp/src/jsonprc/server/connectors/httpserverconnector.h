@@ -3,20 +3,26 @@
 
 #include <sys/types.h>
 #include <stdint.h>
-#include <string.h>
+#include <stdarg.h>
+
+#if defined( _WIN32 ) && !defined( __CYGWIN__ )
+	#include <winsock2.h>
+	#include <ws2tcpip.h>
+	#if defined( _MSC_FULL_VER ) && !defined( _SSIZE_T_DEFINED )
+		#define _SSIZE_T_DEFINED
+		typedef intptr_t ssize_t;
+	#endif // !_SSIZE_T_DEFINED */
+	#else
+		#include <arpa/inet.h>
+		#include <netdb.h>
+		#include <sys/socket.h>
+		#include <sys/time.h>
+		#include <unistd.h>
+#endif
+
+#include "../abstractserverconnector.h"
 #include <map>
 #include <microhttpd.h>
-#if defined(_MSC_FULL_VER) && !defined(_SSIZE_T_DEFINED)
-#define _SSIZE_T_DEFINED
-typedef intptr_t, ssize_t;
-#endif //_SSIZE_T_DEFINED
-#else
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <sys/socket.h>
-#include <sys/time.h>
-#include <unistd.h>
-#endif
 
 namespace itsp
 {
@@ -27,7 +33,7 @@ namespace itsp
     class HttpServer : public AbstractServerConnector
     {
         public:
-            HttpServer( uint32_t port, const std::string &sslCert = "", const std::string &sslKey = "", int threads = 50 );
+            HttpServer( uint16_t port, const std::string &sslCert = "", const std::string &sslKey = "", uint32_t threads = 50 );
             ~HttpServer();
 
             //Binds the server to localhost only and deactivates TLS settings
@@ -36,10 +42,15 @@ namespace itsp
             virtual bool StopListening();
             virtual bool SendResponse( const std::string &response, void *addInfo = NULL );
             virtual bool SendOptionsResponse( void *addInfo );
-            void SetUrlHandler( const std::string &url, IClientConnectionHandler &clientConnectionHandler );
+            void SetUrlHandler( const std::string &url, IClientConnectionHandler *clientConnectionHandler );
         
         private:
-            int ports;
+			#if MHD_VERSION >= 0x00097002
+				typedef MHD_Result MicroHttpdResult;
+			#else
+				typedef int MicroHttpdResult;
+			#endif
+            int port;
             int threads;
             bool isRunning;
             std::string pathSSLCert;
@@ -60,7 +71,7 @@ namespace itsp
                                                 size_t *upload_data_size, 
                                                 void **con_cls );
             IClientConnectionHandler *GetConnectionHandler( const std::string &url );
-    }
+    };
 }
 
 #endif //HTTPSERVERCONNECTOR_H

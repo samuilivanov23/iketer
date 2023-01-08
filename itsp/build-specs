@@ -1,3 +1,17 @@
 g++ -std=c++11 -g -DDEBUG -o rpc-test-build \
         errors.h exception.h errors.cpp exception.cpp \
         -ljsoncpp
+
+g++ -std=c++11 -g -DDEBUG -o rpc-test-build errors.cpp errors.h exception.cpp exception.h jsonparser.h procedure.h procedure.cpp specification.h specificationparser.h specificationparser.cpp specificationwriter.h specificationwriter.cpp -ljsoncpp
+
+g++ -std=c++11 -g -DDEBUG -o rpc-test-build iprocedureinvokationhandler.h iclientconnectionhandler.h abstractserverconnector.h abstractserverconnector.cpp -ljsoncpp
+
+
+g++ -std=c++11 -g -DDEBUG -o rpc-test-build ../common/exception.h ../common/exception.cpp ../common/errors.h ../common/errors.cpp ../common/jsonparser.h ../common/procedure.h ../common/procedure.cpp iprocedureinvokationhandler.h iclientconnectionhandler.h abstractserverconnector.h abstractserverconnector.cpp abstractprotocolhandler.h abstractprotocolhandler.cpp -ljsoncpp
+
+
+g++ -std=c++11 -g -DDEBUG -o rpc-test-build ../common/exception.h ../common/exception.cpp ../common/errors.h ../common/errors.cpp ../common/jsonparser.h ../common/specificationparser.h ../common/specificationparser.cpp ../common/specificationwriter.h ../common/specificationwriter.cpp ../common/procedure.h ../common/procedure.cpp iprocedureinvokationhandler.h iclientconnectionhandler.h abstractserverconnector.h abstractserverconnector.cpp abstractprotocolhandler.h abstractprotocolhandler.cpp rpcserverv2.h rpcserverv2.cpp requesthandlerfactory.h requesthandlerfactory.cpp abstractserver.h connectors/httpserverconnector.h connectors/httpserverconnector.cpp -ljsoncpp -lmicrohttpd
+
+g++ -std=c++11 -g -DDEBUG -o rpc-test-build jsonprc/server/connectors/* jsonprc/common/* jsonprc/server/*.h jsonprc/server/*.cpp jsonprc/server.h tcpsocketserver.cpp -ljsoncpp -lpthread -lmicrohttpd
+
+**Note: telnet 6543 + send {"jsonrpc":"2.0","method":"sayHello","id":1,"params":{"name":"peter"}}; {"jsonrpc":"2.0","method":"notifyServer", "params": null}; 

@@ -3,7 +3,7 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include <jsonrpc/common/exception.h>
-#include <jsonrpc/server/abstractserver.h>
+#include "./common/exception.h"
+#include "./server/abstractserver.h"
 
 #endif //SERVER_H 

@@ -20,14 +20,14 @@ namespace itsp
 
             //Constructor for notification with parameters as list. Last parameter must be NULL
             //If no parameters are passed, parameters do not exists and can not be checked for type by the protocol functions
-            Procedure( const std::string &procedureName, parameterDeclaration_t parameterType, ... );
+            Procedure( const std::string &procedureName, parameterDeclaration_t procedureParameterDeclarationType, ... );
 
             //Constructor for method with parameters as list. Last parameter must be NULL
             //If no parameters are passed, parameters do not exists and can not be checked for type by the protocol functions
-            Procedure( const std::string &procedureName, parameterDeclaration_t parameterType, jsontype_t returnType, ... );
+            Procedure( const std::string &procedureName, parameterDeclaration_t procedureParameterDeclarationType, jsontype_t procedureReturnType, ... );
 
             //Method for validating the parameters for each procedure  
-            bool ValidateParameters() const;
+            bool ValidateParameters( const Json::Value &parameters ) const;
 
             //Get methods
             const parameterNameList_t &GetProcedureParameters() const;
@@ -52,7 +52,7 @@ namespace itsp
             parameterNameList_t procedureParametersName;
             parameterPositionList_t procedureParametersPosition;
             procedure_t procedureType;
-            jsontype_t returnType;
+            jsontype_t procedureReturnType;
             parameterDeclaration_t procedureParameterDeclarationType;
 
             bool ValidateSingleParameter( jsontype_t expectedParameterType, const Json::Value &parameterValue ) const;

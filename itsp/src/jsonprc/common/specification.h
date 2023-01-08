@@ -10,10 +10,10 @@
 namespace itsp
 {
     //Defines if the procedure is a method or notification
-    typedef enum { RPC_METHOD, RPC_NOTIFICATION };
+    typedef enum { RPC_METHOD, RPC_NOTIFICATION } procedure_t;
 
     //Defines all valid and processable types of this protocol
-    enum jsontype_t { JSON_STRING = 1, JSON_BOOLEAN = 2, JSON_INTEGER = 3, JSON_UINTEGER = 4, JSON_REAL = 5, JSON_OBJECT = 6, JSON_ARRAY = 7, JSON_NUMERIC = 8 }
+    enum jsontype_t { JSON_STRING = 1, JSON_BOOLEAN = 2, JSON_INTEGER = 3, JSON_UINTEGER = 4, JSON_REAL = 5, JSON_OBJECT = 6, JSON_ARRAY = 7, JSON_NUMERIC = 8 };
 }
 
 

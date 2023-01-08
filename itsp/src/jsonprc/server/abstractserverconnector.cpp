@@ -5,18 +5,18 @@
 using namespace std;
 using namespace itsp;
 
-AbstractServerConnector::AbstractServerConnector() { this->handler = NULL; }
+AbstractServerConnector::AbstractServerConnector() { this->clientConnectionHandler = NULL; }
 
-AbstractServerConnector::AbstractServerConnector() {}
+AbstractServerConnector::~AbstractServerConnector() {}
 
-void AbstractServerConnector::ProcessReuqest( const std::string &request, const std::string &response )
+void AbstractServerConnector::ProcessRequest( const string &request, string &response )
 {
-    if( this->connectionHandler != NULL ) { this->connectionHandler->HandleRequest( requst, response ); }
+    if( this->clientConnectionHandler != NULL ) { this->clientConnectionHandler->HandleRequest( request, response ); }
 }
 
-void AbstractServerConnector::SetHandler( IConnectionHandler *connectionHandler )
+void AbstractServerConnector::SetHandler( IClientConnectionHandler *clientConnectionHandler )
 {
-    this->connectionHandler = connectionHandler;
+    this->clientConnectionHandler = clientConnectionHandler;
 }
 
-IConnectionHandler *AbstractServerConnector::GetHandler { return this->connectionHandler; }
+IClientConnectionHandler *AbstractServerConnector::GetHandler() { return this->clientConnectionHandler; }

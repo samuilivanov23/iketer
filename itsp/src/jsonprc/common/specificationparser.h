@@ -1,8 +1,8 @@
 #ifndef SPECIFICATIONPARSER_H
 #define SPECIFICATIONPARSER_H
 
-#include <exception.h>
-#include <procedure.h>
+#include "exception.h"
+#include "procedure.h"
 
 namespace itsp
 {

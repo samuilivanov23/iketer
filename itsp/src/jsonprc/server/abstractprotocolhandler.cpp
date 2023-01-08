@@ -6,18 +6,19 @@
 using namespace std;
 using namespace itsp;
 
-AbstractProtocolHandler::AbstractProtocolHandler( IProcedureInvokationHandler &procedureInvokationHandler ) 
-{ 
-    this->procedureInvokationHandler = procedureInvokationHandler;
-}
+AbstractProtocolHandler::AbstractProtocolHandler( IProcedureInvokationHandler &procedureInvokationHandler ) : procedureInvokationHandler( procedureInvokationHandler ) {} 
+//{ 
+//    this->procedureInvokationHandler = procedureInvokationHandler;
+//}
 
 AbstractProtocolHandler::~AbstractProtocolHandler() {}
 
-void AbstractProtocolHandler::AddProcedure( const Procedure &procedure ) { this->procedures[procedure.GetProcedureName] = procedure; }
+void AbstractProtocolHandler::AddProcedure( const Procedure &procedure ) { this->procedures[procedure.GetProcedureName()] = procedure; }
 
-void AbstractProtocolHandler::HandleRequest( const Json::Value &request, std::string &returnValue )
+void AbstractProtocolHandler::HandleRequest( const std::string &request, std::string &returnValue )
 {
-    Json::Value request_, response_;
+    Json::Value request_;
+	Json::Value response_;
     Json::StreamWriterBuilder writerBuilder;
     writerBuilder["indentation"] = "";
 
@@ -28,7 +29,7 @@ void AbstractProtocolHandler::HandleRequest( const Json::Value &request, std::st
     }
     catch( const Json::Exception &exception )
     {
-        this->WrapError( request, Errors::ERROR_RPC_JSON_PARSE_ERROR, Errors::GetErrorMessage( Errors::ERROR_RPC_JSON_PARSE_ERROR ), response );
+        this->WrapError( Json::nullValue, Errors::ERROR_RPC_JSON_PARSE_ERROR, Errors::GetErrorMessage( Errors::ERROR_RPC_JSON_PARSE_ERROR ), response_ );
     }
 
     if( response_ != Json::nullValue ) 
@@ -60,7 +61,7 @@ int AbstractProtocolHandler::ValidateRequest( const Json::Value &request )
     Procedure procedure;
     if( !this->ValidateRequestFields( request ) )
     {
-        error = Errors:ERROR_RPC_INVALID_REQUEST;
+        error = Errors::ERROR_RPC_INVALID_REQUEST;
     }
     else
     {

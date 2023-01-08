@@ -4,7 +4,7 @@
 #include "iprocedureinvokationhandler.h"
 #include "iclientconnectionhandler.h"
 #include "../common/procedure.h"
-#include "string"
+#include <string>
 #include <map>
 
 #define KEY_REQUEST_METHODNAME "method"
@@ -18,23 +18,23 @@ namespace itsp
     class AbstractProtocolHandler : public IProtocolHandler 
     {
         public:
-            AbstractProtocolHandler( IprocedureInvokationHandler &procedureInvokationHandler );
+            AbstractProtocolHandler( IProcedureInvokationHandler &procedureInvokationHandler );
             virtual ~AbstractProtocolHandler();
 
-            void HandleRequest( const Json::Value &request, std::string &returnValue );
+            void HandleRequest( const std::string &request, std::string &returnValue );
             virtual void AddProcedure( const Procedure &procedure );
             virtual void HandleJsonRequest( const Json::Value &request, Json::Value &response ) = 0;
-            virtual void ValidateRequestFields( const Json::Value &value ) = 0;
+            virtual bool ValidateRequestFields( const Json::Value &value ) = 0;
             virtual void WrapResult( const Json::Value &request, Json::Value &response, Json::Value &returnValue ) = 0;
-            virtual void WrapError( const Json::Value &request, int errorCode, std::string &errorMessage, Json::Value &resultError ) = 0;
-            virtual procedure_t GetRequestType( const Json::Value &request );
+            virtual void WrapError( const Json::Value &request, int errorCode, const std::string &errorMessage, Json::Value &resultError ) = 0;
+            virtual procedure_t GetRequestType( const Json::Value &request ) = 0;
 
 
         protected:
             IProcedureInvokationHandler &procedureInvokationHandler;
             std::map<std::string, Procedure> procedures;
 
-            void ProcessRequest( const Json::Value &request, Json::Value response );
+            void ProcessRequest( const Json::Value &request, Json::Value &response );
             int ValidateRequest( const Json::Value &request );
     };
 }
