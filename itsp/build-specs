@@ -14,4 +14,6 @@ g++ -std=c++11 -g -DDEBUG -o rpc-test-build ../common/exception.h ../common/exce
 
 g++ -std=c++11 -g -DDEBUG -o rpc-test-build jsonprc/server/connectors/* jsonprc/common/* jsonprc/server/*.h jsonprc/server/*.cpp jsonprc/server.h tcpsocketserver.cpp -ljsoncpp -lpthread -lmicrohttpd
 
-**Note: telnet 6543 + send {"jsonrpc":"2.0","method":"sayHello","id":1,"params":{"name":"peter"}}; {"jsonrpc":"2.0","method":"notifyServer", "params": null}; 
+**Note: telnet 6543 + send {"jsonrpc":"2.0","method":"sayHello","id":1,"params":{"name":"peter"}}; {"jsonrpc":"2.0","method":"notifyServer", "params": null};
+		curl telnet://127.0.0.1:6543 <<< '{"jsonrpc":"2.0","method":"sayHello","id":1,"params":{"name":"peter"}}'
+		curl telnet://127.0.0.1:6543 <<< '{"jsonrpc":"2.0","method":"notifyServer", "params": null}'

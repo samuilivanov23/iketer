@@ -16,5 +16,4 @@ namespace itsp
     enum jsontype_t { JSON_STRING = 1, JSON_BOOLEAN = 2, JSON_INTEGER = 3, JSON_UINTEGER = 4, JSON_REAL = 5, JSON_OBJECT = 6, JSON_ARRAY = 7, JSON_NUMERIC = 8 };
 }
 
-
 #endif //SPECIFICATION_H

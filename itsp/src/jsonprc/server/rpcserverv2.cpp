@@ -70,7 +70,8 @@ bool RpcServerV2::ValidateRequestFields( const Json::Value &request )
     if( !( request.isMember( KEY_REQUEST_METHODNAME ) && request[KEY_REQUEST_METHODNAME].isString() ) ) { return false; }
     
     if( !( request.isMember( KEY_REQUEST_VERSION ) && request[KEY_REQUEST_VERSION].isString() && request[KEY_REQUEST_VERSION]==JSON_RPC_VERSION2 ) ) { return false; }
-    if( request.isMember( KEY_REQUEST_ID ) && 
+    
+	if( request.isMember( KEY_REQUEST_ID ) && 
         !( request[KEY_REQUEST_ID].isInt() || request[KEY_REQUEST_ID].isString() || request[KEY_REQUEST_ID].isNull() ) ) { return false; }
     
     if( request.isMember( KEY_REQUEST_PARAMETERS ) &&
